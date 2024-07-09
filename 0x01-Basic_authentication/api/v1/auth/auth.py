@@ -5,6 +5,7 @@ from flask import jsonify, abort, request
 from typing import List, TypeVar
 from models.user import User
 
+
 class Auth:
     """ Auth class
     """
