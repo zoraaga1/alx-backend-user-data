@@ -80,3 +80,16 @@ class BasicAuth(Auth):
         user_email, user_pwd = decoded_base64_authorization_header.split(':', 1)  # noqa
 
         return user_email, user_pwd
+
+    def extract_user_credentials(self, decoded_base64_authorization_header: str) -> (str, str):  # noqa
+        """ Extract user credentials"""
+        if decoded_base64_authorization_header is None or not isinstance(decoded_base64_authorization_header, str):  # noqa
+            return None, None
+
+        if ':' not in decoded_base64_authorization_header:
+            return None, None
+
+        # Split the decoded string at the first occurrence of ':'
+        user_email, user_pwd = decoded_base64_authorization_header.split(':', 1)  # noqa: E501
+
+        return user_email, user_pwd
