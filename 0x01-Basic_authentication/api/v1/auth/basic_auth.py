@@ -2,6 +2,7 @@
 """ Module of Basic Auth views"""
 from api.v1.auth.auth import Auth
 import base64
+from typing import TypeVar
 
 
 class BasicAuth(Auth):
@@ -34,3 +35,16 @@ class BasicAuth(Auth):
         except (base64.binascii.Error, UnicodeDecodeError):
             # Return None if decoding fails
             return None
+
+    def user_object_from_credentials(self, user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """ User object from credentials
+        """
+        if user_email is None or not isinstance(user_email, str) or \
+           user_pwd is None or not isinstance(user_pwd, str):
+            return None
+        from models.user import User
+        user = User.search({'email': user_email})
+        if user is None or not user.is_valid_password(user_pwd):
+            return None
+        return user
