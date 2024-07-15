@@ -3,13 +3,47 @@
 from api.v1.auth.auth import Auth
 from typing import TypeVar
 from models.user import User
+import base64
 
 
 User = TypeVar('User')
 
 
-class BasicAuth:
-    def user_object_from_credentials(self, user_email: str, user_pwd: str) -> TypeVar('User'):
+class BasicAuth(Auth):
+    """ BasicAuth class
+    """
+    def extract_base64_authorization_header(self,
+                                            authorization_header: str) -> str:
+        """ Extract base64 authorization header
+        """
+        if authorization_header is None or \
+           not isinstance(authorization_header, str) or \
+           not authorization_header.startswith("Basic "):
+            return None
+        return authorization_header[6:]
+
+    def decode_base64_authorization_header(self,
+                                           base64_authorization_header: str
+                                           ) -> str:
+        """ Decode base64 authorization header
+        """
+        if base64_authorization_header is None or \
+           not isinstance(base64_authorization_header, str):
+            return None
+        try:
+            # Decode the Base64 string using base64.b64decode
+            decoded_bytes = base64.b64decode(base64_authorization_header)
+            # Convert the bytes to a UTF-8 string
+            decoded_string = decoded_bytes.decode('utf-8')
+            return decoded_string
+        except (base64.binascii.Error, UnicodeDecodeError):
+            # Return None if decoding fails
+            return None
+
+    def user_object_from_credentials(self, user_email: str,
+                                     user_pwd: str) -> TypeVar('User'): # type: ignore
+        """ User object from credentials
+        """
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
