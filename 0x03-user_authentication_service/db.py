@@ -50,7 +50,7 @@ class DB:
         user = self.find_user_by(id=user_id)
         if not user:
             raise ValueError(f"User with id {user_id} not found")
-        
+
         for key, value in kwargs.items():
             if not hasattr(user, key):
                 raise ValueError(f"User has no attribute '{key}'")
