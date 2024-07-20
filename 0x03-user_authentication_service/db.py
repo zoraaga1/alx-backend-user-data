@@ -43,3 +43,16 @@ class DB:
     def find_user_by(self, **kwargs) -> User:
         """Find a user by a given attribute"""
         return self._session.query(User).filter_by(**kwargs).first()
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Update a user in the database
+        """
+        if not user:
+            raise ValueError(f"User with id {user_id} not found")
+        
+        for key, value in kwargs.items():
+            if not hasattr(user, key):
+                raise ValueError(f"User has no attribute '{key}'")
+            setattr(user, key, value)
+
+        self._session.commit()
